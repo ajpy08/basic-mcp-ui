@@ -15,9 +15,7 @@ Este proyecto implementa un servidor MCP (Model Context Protocol) con una interf
 
 ```
 javi-test-mcp-ui/
-├── main.py                # Archivo principal (ejecuta ambos servidores)
-├── server.py              # Servidor MCP (solo herramientas)
-├── proxy.py               # Servidor web proxy (interfaz web)
+├── server.py              # Servidor principal (MCP + Web)
 ├── static/
 │   ├── index.html         # Interfaz web principal
 │   ├── style.css          # Estilos CSS
@@ -47,23 +45,21 @@ javi-test-mcp-ui/
    # Editar .env con tus configuraciones personalizadas
    ```
 
-4. **Ejecutar los servidores**:
-   
-   **Opción A: Ejecutar ambos servidores juntos (recomendado)**
+4. **Activar entorno virtual** (si usas uno):
    ```bash
-   python main.py
-   ```
+   # Windows
+   venv\Scripts\activate
    
-   **Opción B: Ejecutar servidores por separado**
-   ```bash
-   # Terminal 1 - Servidor MCP
-   python server.py
-   
-   # Terminal 2 - Servidor Proxy Web
-   python proxy.py
+   # Linux/Mac
+   source venv/bin/activate
    ```
 
-5. **Acceder a la interfaz web**:
+5. **Ejecutar el servidor**:
+   ```bash
+   python server.py
+   ```
+
+6. **Acceder a la interfaz web**:
    - Abre tu navegador y ve a: `http://127.0.0.1:8001` (o el puerto configurado)
    - El servidor MCP estará disponible en: `http://127.0.0.1:8000` (o el puerto configurado)
 
@@ -128,33 +124,30 @@ LOG_LEVEL=DEBUG
 
 ## Arquitectura
 
-El proyecto está dividido en tres componentes principales:
+El proyecto utiliza una arquitectura integrada con dos servidores ejecutándose simultáneamente:
 
-### 1. **server.py** - Servidor MCP Puro
-- Contiene únicamente las herramientas MCP (`add`, `subtract`, `multiply`, `divide`)
-- Funciones core de cálculo (`add_numbers`, `subtract_numbers`, etc.)
-- Wrappers MCP que exponen las funciones core
-- Ejecuta el servidor MCP en el puerto configurado
-
-### 2. **proxy.py** - Servidor Web Proxy
-- Maneja todas las peticiones HTTP de la interfaz web
-- Sirve archivos estáticos (HTML, CSS, JS)
-- Endpoint `/call_tool` que actúa como proxy para las herramientas MCP
-- Importa y llama directamente a las funciones core del servidor MCP
-- Maneja CORS y configuración
-
-### 3. **main.py** - Orquestador
-- Ejecuta ambos servidores simultáneamente
-- Servidor MCP en un hilo separado
-- Servidor proxy web en el hilo principal
+### **server.py** - Servidor Integrado
+- **Servidor MCP** (puerto 8000): Maneja las herramientas de cálculo
+- **Servidor Web** (puerto 8001): Sirve la interfaz web y expone endpoints REST
+- **Funciones Core**: Lógica de cálculo (`add_numbers`, `subtract_numbers`, etc.)
+- **Wrappers MCP**: Herramientas MCP (`add`, `subtract`, `multiply`, `divide`)
+- **WebHandler**: Maneja peticiones HTTP y sirve archivos estáticos
 
 ### Flujo de Comunicación
 
 ```
-┌─────────────────┐    HTTP     ┌─────────────────┐    Import    ┌─────────────────┐
-│   Interfaz Web  │ ──────────► │  proxy.py       │ ──────────► │  server.py      │
-│   (Frontend)    │             │  (Puerto 8001)  │             │  (Funciones)    │
-└─────────────────┘             └─────────────────┘             └─────────────────┘
+┌─────────────────┐    HTTP     ┌─────────────────┐
+│   Interfaz Web  │ ──────────► │  server.py      │
+│   (Frontend)    │             │  (Puerto 8001)  │
+└─────────────────┘             └─────────────────┘
+                                         │
+                                         │ Llamada directa
+                                         ▼
+                                ┌─────────────────┐
+                                │  Funciones Core │
+                                │  (add_numbers,  │
+                                │   subtract, etc)│
+                                └─────────────────┘
                                          │
                                          │ MCP Protocol
                                          ▼
@@ -166,11 +159,11 @@ El proyecto está dividido en tres componentes principales:
 
 ## Desarrollo
 
-La separación de responsabilidades permite:
-- **Mantenimiento más fácil**: Cada archivo tiene una responsabilidad específica
-- **Escalabilidad**: Puedes ejecutar servidores por separado si es necesario
-- **Claridad**: El código MCP está separado del código web
-- **Reutilización**: Las funciones core pueden ser importadas por otros módulos
+El servidor ejecuta dos servicios simultáneamente:
+1. **Servidor MCP** (puerto 8000): Maneja las herramientas de cálculo
+2. **Servidor Web** (puerto 8001): Sirve la interfaz web y expone endpoints REST
+
+La comunicación entre la interfaz web y el servidor MCP se realiza a través de endpoints REST que actúan como proxy para las herramientas MCP.
 
 ## Personalización
 
@@ -179,3 +172,11 @@ Puedes modificar fácilmente:
 - **Funcionalidad**: Modifica `static/script.js`
 - **Herramientas MCP**: Añade nuevas funciones en `server.py`
 - **Interfaz**: Personaliza `static/index.html`
+- **Configuración**: Modifica variables en `.env`
+
+## Notas Importantes
+
+- **Entorno Virtual**: Asegúrate de activar el entorno virtual antes de ejecutar
+- **Puertos**: Por defecto usa 8000 (MCP) y 8001 (Web), configurables en `.env`
+- **Dependencias**: Instala con `pip install -r requirements.txt`
+- **Logs**: El servidor muestra logs detallados de todas las operaciones
