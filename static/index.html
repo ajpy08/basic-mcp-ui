@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora MCP</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🧮 Calculadora MCP</h1>
+            <p>Interfaz gráfica para el servidor MCP de calculadora</p>
+        </header>
+
+        <main>
+            <div class="calculator-section">
+                <div class="input-group">
+                    <label for="num1">Primer número:</label>
+                    <input type="number" id="num1" step="any" placeholder="Ingresa un número">
+                </div>
+
+                <div class="input-group">
+                    <label for="num2">Segundo número:</label>
+                    <input type="number" id="num2" step="any" placeholder="Ingresa un número">
+                </div>
+
+                <div class="operations">
+                    <button class="operation-btn" data-operation="add">➕ Sumar</button>
+                    <button class="operation-btn" data-operation="subtract">➖ Restar</button>
+                    <button class="operation-btn" data-operation="multiply">✖️ Multiplicar</button>
+                    <button class="operation-btn" data-operation="divide">➗ Dividir</button>
+                </div>
+
+                <div class="result-section">
+                    <h3>Resultado:</h3>
+                    <div id="result" class="result-display">0</div>
+                </div>
+
+                <div class="history-section">
+                    <h3>Historial:</h3>
+                    <div id="history" class="history-list"></div>
+                    <button id="clearHistory" class="clear-btn">Limpiar Historial</button>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>Servidor MCP: <code id="mcp-url">Cargando...</code> | Interfaz Web: <code id="ui-url">Cargando...</code></p>
+        </footer>
+    </div>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>
