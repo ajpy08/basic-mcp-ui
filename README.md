@@ -13,7 +13,7 @@ Este proyecto implementa un servidor MCP (Model Context Protocol) con una interf
 
 ## Estructura del Proyecto
 
-```
+```bash
 javi-test-mcp-ui/
 ├── server.py              # Servidor principal (MCP + Web)
 ├── static/
@@ -29,23 +29,27 @@ javi-test-mcp-ui/
 ## Instalación y Uso
 
 1. **Clonar el repositorio**:
+
    ```bash
    git clone <url-del-repositorio>
    cd javi-test-mcp-ui
    ```
 
 2. **Instalar dependencias**:
+
    ```bash
    pip install -r requirements.txt
    ```
 
 3. **Configurar variables de entorno** (opcional):
+
    ```bash
    cp .env.example .env
    # Editar .env con tus configuraciones personalizadas
    ```
 
 4. **Activar entorno virtual** (si usas uno):
+
    ```bash
    # Windows
    venv\Scripts\activate
@@ -55,6 +59,7 @@ javi-test-mcp-ui/
    ```
 
 5. **Ejecutar el servidor**:
+
    ```bash
    python server.py
    ```
@@ -66,6 +71,7 @@ javi-test-mcp-ui/
 ## Funcionalidades
 
 ### Servidor MCP
+
 - **Puerto**: 8000
 - **Herramientas disponibles**:
   - `add(x, y)`: Suma dos números
@@ -74,6 +80,7 @@ javi-test-mcp-ui/
   - `divide(x, y)`: Divide dos números (con validación de división por cero)
 
 ### Interfaz Web
+
 - **Puerto**: 8001
 - **Características**:
   - Interfaz intuitiva con campos de entrada para dos números
@@ -127,6 +134,7 @@ LOG_LEVEL=DEBUG
 El proyecto utiliza una arquitectura integrada con dos servidores ejecutándose simultáneamente:
 
 ### **server.py** - Servidor Integrado
+
 - **Servidor MCP** (puerto 8000): Maneja las herramientas de cálculo
 - **Servidor Web** (puerto 8001): Sirve la interfaz web y expone endpoints REST
 - **Funciones Core**: Lógica de cálculo (`add_numbers`, `subtract_numbers`, etc.)
@@ -135,7 +143,7 @@ El proyecto utiliza una arquitectura integrada con dos servidores ejecutándose 
 
 ### Flujo de Comunicación
 
-```
+```bash
 ┌─────────────────┐    HTTP     ┌─────────────────┐
 │   Interfaz Web  │ ──────────► │  server.py      │
 │   (Frontend)    │             │  (Puerto 8001)  │
@@ -160,6 +168,7 @@ El proyecto utiliza una arquitectura integrada con dos servidores ejecutándose 
 ## Desarrollo
 
 El servidor ejecuta dos servicios simultáneamente:
+
 1. **Servidor MCP** (puerto 8000): Maneja las herramientas de cálculo
 2. **Servidor Web** (puerto 8001): Sirve la interfaz web y expone endpoints REST
 
@@ -168,6 +177,7 @@ La comunicación entre la interfaz web y el servidor MCP se realiza a través de
 ## Personalización
 
 Puedes modificar fácilmente:
+
 - **Estilos**: Edita `static/style.css`
 - **Funcionalidad**: Modifica `static/script.js`
 - **Herramientas MCP**: Añade nuevas funciones en `server.py`
